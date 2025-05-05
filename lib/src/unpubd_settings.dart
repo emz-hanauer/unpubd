@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:dcli/dcli.dart';
 import 'package:meta/meta.dart';
+import 'package:path/path.dart';
 import 'package:settings_yaml/settings_yaml.dart';
 import 'package:yaml/yaml.dart';
 
@@ -88,6 +89,40 @@ class UnpubdSettings {
   ///
   String get unpubPort => settings.asString('unpub_port', defaultValue: '4000');
   set unpubPort(String port) => settings['unpub_port'] = port;
+
+  ///
+  String? get googleSecretName => settings.selectAsString('google_secret_name');
+  set googleSecretName(String? port) => settings['google_secret_name'] = port;
+
+  ///
+  String? get googleSecretRefreshToken =>
+      settings.selectAsString('google_secret_refresh_token');
+  set googleSecretRefreshToken(String? port) =>
+      settings['google_secret_refresh_token'] = port;
+
+  ///
+  String? get googleServiceAccountJsonBase64 =>
+      settings.selectAsString('google_service_account_json_base64');
+  set googleServiceAccountJsonBase64(String? port) =>
+      settings['google_service_account_json_base64'] = port;
+
+  ///
+  String? get presharedAllowedTokens =>
+      settings.selectAsString('preshared_allowed_tokens');
+  set presharedAllowedTokens(String? port) =>
+      settings['preshared_allowed_tokens'] = port;
+
+  ///
+  String? get presharedUploadEmail =>
+      settings.selectAsString('preshared_upload_email');
+  set presharedUploadEmail(String? port) =>
+      settings['preshared_upload_email'] = port;
+
+  ///
+  String? get presharedUploadTokens =>
+      settings.selectAsString('preshared_upload_tokens');
+  set presharedUploadTokens(String? port) =>
+      settings['preshared_upload_tokens'] = port;
 
   void save() => settings.save();
 }

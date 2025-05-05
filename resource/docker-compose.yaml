@@ -1,5 +1,3 @@
-version: '3.1'
-
 networks:
   unpubd:
     driver: bridge
@@ -11,27 +9,27 @@ services:
   mongodb:
     container_name: mongo
     image: mongo:5.0.13
-    restart: on-failure
+    restart: unless-stopped
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
       MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE}
     volumes:
       - mongodata:/data/db 
-      - #PATH_TO_INITDB#:/docker-entrypoint-initdb.d/
+    #  - PATH_TO_INITDB#:/docker-entrypoint-initdb.d/
     networks:
       - unpubd
-# use if we need to connect directly to Mongo from host. ONLY FOR TESTING
-#    ports:
-#      - 27017:27017      
+    # use if we need to connect directly to Mongo from host. ONLY FOR TESTING
+    #ports:
+    #  - 27017:27017
 
     logging:
       driver: "local"
 
   unpubd:
     container_name: unpubd
-    image: noojee/unpubd:latest
-    restart: on-failure
+    image: petrleocompel/unpubd:latest
+    restart: unless-stopped
     depends_on:
       - mongodb
     environment:
@@ -41,6 +39,12 @@ services:
       MONGO_HOST: ${MONGO_HOST}
       MONGO_PORT: ${MONGO_PORT}
       UNPUBD_PORT: ${UNPUBD_PORT}
+      GOOGLE_SECRET_NAME: ${GOOGLE_SECRET_NAME}
+      GOOGLE_SECRET_REFRESH_TOKEN: ${GOOGLE_SECRET_REFRESH_TOKEN}
+      GOOGLE_SERVICE_ACCOUNT_JSON_BASE64: ${GOOGLE_SERVICE_ACCOUNT_JSON_BASE64}
+      PRESHARED_ALLOWED_TOKENS: ${PRESHARED_ALLOWED_TOKENS}
+      PRESHARED_UPLOAD_EMAIL: ${PRESHARED_UPLOAD_EMAIL}
+      PRESHARED_UPLOAD_TOKENS: ${PRESHARED_UPLOAD_TOKENS}
       TZ: ${TZ}
     links:
       - mongodb
@@ -49,6 +53,4 @@ services:
     ports:
       - ${UNPUBD_PORT}:${UNPUBD_PORT}
     logging:
-      driver: "local"      
-
-      
+      driver: "local"

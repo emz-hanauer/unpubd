@@ -78,6 +78,12 @@ class RunCommand extends Command<void> {
     final app = App(
       metaStore: MongoStore(db),
       packageStore: FileStore(UnpubdPaths().pathToPackages),
+      googleSecretName: env['GOOGLE_SECRET_NAME'],
+      googleSecretRefreshToken: env['GOOGLE_SECRET_REFRESH_TOKEN'],
+      googleServiceAccountJsonBase64: env['GOOGLE_SERVICE_ACCOUNT_JSON_BASE64'],
+      presharedAllowedTokens: env['PRESHARED_ALLOWED_TOKENS']?.split(','),
+      presharedUploadEmail: env['PRESHARED_UPLOAD_EMAIL'],
+      presharedUploadTokens: env['PRESHARED_UPLOAD_TOKENS']?.split(','),
     );
 
     final unpubHost = env['UNPUBD_HOST'] ?? '0.0.0.0';
