@@ -1,6 +1,90 @@
 # unpubd
 A docker container and management tools for running a local dart package respository.
 
+Prebuild docker images for unpubd
+
+## Changes over noojee/unpubd
+* dart 3 support
+* google secret manager support to store the tokens
+* preshared token and email support (no Oauth needed)
+
+## Easy start
+Just put down your own `docker-compose`
+```yaml
+networks:
+  unpubd:
+    driver: bridge
+
+volumes:
+  mongodata:
+
+services:
+  mongodb:
+    image: mongo
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+      MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE}
+    volumes:
+      - mongodata:/data/db
+    networks:
+      - unpubd
+
+  unpubd:
+    image: ghrc.io/petrleocompel/unpubd:latest
+    restart: unless-stopped
+    depends_on:
+      - mongodb
+    environment:
+      MONGO_ROOT_USERNAME: ${MONGO_ROOT_USERNAME}
+      MONGO_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
+      MONGO_DATABASE: ${MONGO_DATABASE}
+      MONGO_HOST: ${MONGO_HOST:-mongodb} 
+      MONGO_PORT: ${MONGO_PORT:-27017}
+      UNPUBD_PORT: ${UNPUBD_PORT:-4000}
+      GOOGLE_SECRET_NAME: ${GOOGLE_SECRET_NAME}
+      GOOGLE_SECRET_REFRESH_TOKEN: ${GOOGLE_SECRET_REFRESH_TOKEN}
+      GOOGLE_SERVICE_ACCOUNT_JSON_BASE64: ${GOOGLE_SERVICE_ACCOUNT_JSON_BASE64}
+      PRESHARED_ALLOWED_TOKENS: ${PRESHARED_ALLOWED_TOKENS}
+      PRESHARED_UPLOAD_EMAIL: ${PRESHARED_UPLOAD_EMAIL}
+      PRESHARED_UPLOAD_TOKENS: ${PRESHARED_UPLOAD_TOKENS}
+      TZ: ${TZ}
+    links:
+      - mongodb
+    networks:
+      - unpubd
+    ports:
+      - ${UNPUBD_PORT:-4000}:${UNPUBD_PORT:-4000}
+```
+and `.env` file
+```
+MONGO_INITDB_ROOT_USERNAME="admin"
+MONGO_INITDB_ROOT_PASSWORD="admin"
+MONGO_INITDB_DATABASE="admin"
+MONGO_ROOT_USERNAME="admin"
+MONGO_ROOT_PASSWORD="admin"
+MONGO_DATABASE="admin"
+MONGO_HOST="mongodb"
+MONGO_PORT="27017"
+UNPUBD_PORT="4000"
+
+# not required
+# read only tokens
+PRESHARED_ALLOWED_TOKENS="x,y,b"
+# rw tokens
+PRESHARED_UPLOAD_EMAIL="info@example.com"
+PRESHARED_UPLOAD_TOKENS="x,y,b"
+# google secret manager
+GOOGLE_SERVICE_ACCOUNT_JSON_BASE64="x"
+# replce <> with your values
+GOOGLE_SECRET_NAME="/projects/<0000000000>/secrets/<my-secret>/versions/latest"
+# http refresh url token for refreshing tokens - your random string - openssl rand -hex 64
+GOOGLE_SECRET_REFRESH_TOKEN="x"
+```
+
+---
+
 Unpubd is essentially an installer for the unpub package.
 
 The install creates two docker containers mongo, and unpubd.
