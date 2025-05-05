@@ -2,8 +2,11 @@
 
 import 'dart:io';
 
+import 'package:args/args.dart';
 import 'package:dcli/dcli.dart';
 import 'package:mongo_dart/mongo_dart.dart';
+import 'package:path/path.dart';
+import 'package:uuid/uuid.dart';
 import 'package:unpubd/src/version/version.g.dart';
 
 /// build and publish the unpubd docker container.

@@ -97,7 +97,7 @@ You can alter the config by running 'unpubd config' or by modifying ~/.unpubd/un
 
   void run() {
     try {
-      waitForEx(runner.run(args));
+      runner.run(args);
     } on FormatException catch (e) {
       logerr(red(e.message));
       showUsage();

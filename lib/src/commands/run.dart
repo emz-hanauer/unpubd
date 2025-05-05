@@ -26,8 +26,7 @@ class RunCommand extends Command<void> {
   @override
   void run() {
     RunArgs().parse(argResults!);
-
-    waitForEx<void>(_run());
+    _run();
   }
 
   Future<void> _run() async {
